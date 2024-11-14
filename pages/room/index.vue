@@ -1,17 +1,32 @@
 <script setup>
+const router = useRouter();
 const roomsList = ref([]);
 // 使用 fetch 或 axios 串接 前台房型 API ( GET )
 // apiUrl : https://nuxr3.zeabur.app/api/v1/rooms
 // response 回傳後，將資料寫入 roomsList 變數
 // 使用 roomsList 變數在下方 template 渲染列表
+try {
+  const response = await fetch('https://nuxr3.zeabur.app/api/v1/rooms');
+  if (!response.ok) {
+    throw new Error('取得房型資料失敗');
+  }
+  const data = await response.json();
+  roomsList.value = data.result;
+} catch (error) {
+  console.error(error);
+}
 </script>
 
 <template>
   <h1>房型頁面</h1>
-  <!-- <div class="container mt-4">
+  <div class="container mt-4">
     <div class="row justify-content-center">
-      <div class="col-8 col-md-6 col-lg-3" v-for="...">
-        <div class="card h-100 shadow-sm">
+      <div
+        class="col-8 col-md-6 col-lg-3"
+        v-for="room in roomsList"
+        :key="room._id"
+      >
+        <div @click="router.push(`/room/_id`)" class="card h-100 shadow-sm">
           <img :src="room.imageUrl" class="card-img-top" alt="Room Image" />
           <div class="card-body d-flex flex-column">
             <h3 class="card-title">{{ room.name }}</h3>
@@ -26,7 +41,7 @@ const roomsList = ref([]);
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <style scoped>

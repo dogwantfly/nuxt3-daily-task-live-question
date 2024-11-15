@@ -1,9 +1,13 @@
 <script setup>
 const router = useRouter();
+const route = useRoute();
 
 // 串接 API 取得房型詳細資料
 // API path : https://nuxr3.zeabur.app/api/v1/rooms/{id}
 // 將資料渲染至下方的 div.room-page 區塊
+const { roomDetail, getRoomDetail } = useRoom();
+await getRoomDetail(route.params.roomId);
+  
 </script>
 
 <template>
@@ -15,79 +19,52 @@ const router = useRouter();
       <div class="col-md-6">
         <div class="room-page">
           <div class="room-header">
-            <h1 class="room-name">尊爵雙人房</h1>
+            <h1 class="room-name">{{ roomDetail.name }}</h1>
             <p class="room-description">
-              享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。
+              {{ roomDetail.description }}
             </p>
           </div>
 
           <div class="room-gallery">
             <img
-              src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/typescript-hotel/%E6%A1%8C%E6%A9%9F%E7%89%88/room2-1.png"
-              alt="尊爵雙人房主圖"
+              :src="roomDetail.imageUrl"
+              :alt="roomDetail.name + '主圖'"
               class="room-main-image"
             />
             <div class="room-image-list">
-              <img
-                src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/typescript-hotel/%E6%A1%8C%E6%A9%9F%E7%89%88/room2-2.png"
-                alt="圖片2"
-              />
-              <img
-                src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/typescript-hotel/%E6%A1%8C%E6%A9%9F%E7%89%88/room2-3.png"
-                alt="圖片3"
-              />
-              <img
-                src="https://raw.githubusercontent.com/hexschool/2022-web-layout-training/main/typescript-hotel/%E6%A1%8C%E6%A9%9F%E7%89%88/room2-4.png"
-                alt="圖片4"
-              />
-              <img
-                src="https://github.com/hexschool/2022-web-layout-training/blob/main/typescript-hotel/%E6%A1%8C%E6%A9%9F%E7%89%88/room2-5.png?raw=true"
-                alt="圖片5"
-              />
+              <img v-for="(image, index) in roomDetail.imageUrlList" :key="index" :src="image" :alt="`圖片${index}`" />
             </div>
           </div>
 
           <div class="room-info">
             <div class="info-block">
               <h2>房間資訊</h2>
-              <p>面積: 24坪</p>
-              <p>床型: 一張大床</p>
-              <p>最多容納人數: 4</p>
-              <p>價格: NT$10,000</p>
+              <p>面積: {{ roomDetail.areaInfo }}坪</p>
+              <p>床型: {{ roomDetail.bedInfo }}</p>
+              <p>最多容納人數: {{ roomDetail.maxPeople }}</p>
+              <p>價格: NT${{ roomDetail.price }}</p>
             </div>
 
             <div class="info-block">
               <h2>房間配置</h2>
               <ul>
-                <li>市景: 提供</li>
-                <li>獨立衛浴: 提供</li>
-                <li>樓層電梯: 提供</li>
+                <li v-for="item in roomDetail.layoutInfo" :key="item.title">
+                  {{ item.title }}: {{ item.isProvide ? '提供' : '不提供' }}
+                </li>
               </ul>
             </div>
 
             <div class="info-block">
               <h2>房內設施</h2>
-              <ul>
-                <li>平面電視: 提供</li>
-                <li>吹風機: 提供</li>
-                <li>冰箱: 提供</li>
-                <li>熱水壺: 提供</li>
-                <li>檯燈: 提供</li>
-                <li>衣櫥: 提供</li>
-                <li>書桌: 提供</li>
+              <ul v-for="item in roomDetail.facilityInfo" :key="item.title">
+                <li>{{ item.title }}: {{ item.isProvide ? '提供' : '不提供' }}</li>
               </ul>
             </div>
 
             <div class="info-block">
               <h2>客房備品</h2>
-              <ul>
-                <li>衛生紙: 提供</li>
-                <li>拖鞋: 提供</li>
-                <li>沐浴用品: 提供</li>
-                <li>刮鬍刀: 提供</li>
-                <li>刷牙用品: 提供</li>
-                <li>罐裝水: 提供</li>
-                <li>梳子: 提供</li>
+              <ul v-for="item in roomDetail.amenityInfo" :key="item.title">
+                <li>{{ item.title }}: {{ item.isProvide ? '提供' : '不提供' }}</li>
               </ul>
             </div>
           </div>

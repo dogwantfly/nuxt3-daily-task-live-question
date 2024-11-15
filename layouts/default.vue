@@ -3,7 +3,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <NuxtLink class="navbar-brand" to="/">Navbar</NuxtLink>
       <button
         class="navbar-toggler"
         type="button"
@@ -18,13 +18,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <NuxtLink class="nav-link" aria-current="page" to="/">Home</NuxtLink>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Pricing</a>
+            <NuxtLink class="nav-link" to="/rooms">Rooms</NuxtLink>
           </li>
         </ul>
       </div>

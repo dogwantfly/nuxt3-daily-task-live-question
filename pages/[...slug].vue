@@ -1,5 +1,9 @@
 <script setup>
-const page = "xxx";
+const router = useRouter();
+const route = useRoute();
+console.log(route.params.slug);
+const page = route.params.slug[0];
+
 </script>
 
 <template>
@@ -7,6 +11,7 @@ const page = "xxx";
     <h1>404 - 找不到頁面</h1>
     <p>抱歉，您所尋找的 {{ page }} 頁面不存在。</p>
     <!-- 返回首頁的連結 -->
+    <button @click="router.push('/')">返回首頁</button>
   </div>
 </template>
 

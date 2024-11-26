@@ -39,11 +39,45 @@ useSeoMeta({
 const isProvide = function (isProvideBoolean = false) {
   return isProvideBoolean ? "提供" : "未提供";
 };
+  
+const title = computed(() => {
+  return `Freyja | ${roomObject.value.name}`;
+});
+
+const description = computed(() => {
+  return roomObject.value.description;
+});
+
+const socialMediaTitle = computed(() => {
+  return `Freyja | ${roomObject.value.name}`;
+});
+
+const socialMediaDescription = computed(() => {
+  return roomObject.value.description;
+});
+
+const socialMediaImage = computed(() => {
+  return roomObject.value.imageUrl;
+});
+
+const socialMediaUrl = computed(() => {
+  return `https://freyja.travel.com.tw/room/${roomObject.value._id}`;
+});
 </script>
 
 <template>
   <Head>
     <!-- 請在此處作答，使用元件設定頁面的 SEO Meta  -->
+    <Title>{{ title }}</Title>
+    <Meta name="description" :content="description" />
+    <Meta name="og:title" :content="socialMediaTitle" />
+    <Meta name="og:description" :content="socialMediaDescription" />
+    <Meta name="og:image" :content="socialMediaImage" />
+    <Meta name="og:url" :content="socialMediaUrl" />
+    <Meta name="twitter:card" content="summary_large_image" />
+    <Meta name="twitter:title" :content="socialMediaTitle" />
+    <Meta name="twitter:description" :content="socialMediaDescription" />
+    <Meta name="twitter:image" :content="socialMediaImage" />
   </Head>
 
   <h2>房型詳細頁面</h2>

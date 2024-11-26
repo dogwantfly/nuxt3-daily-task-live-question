@@ -5,17 +5,17 @@ const userLoginObject = ref({
   password: "",
 });
 
-const loginAccount = async (requsetBody) => {
+const loginAccount = async () => {
   try {
     const { token } = await $fetch("/user/login", {
       baseURL: "https://nuxr3.zeabur.app/api/v1",
       method: "POST",
       body: {
-        ...requsetBody,
+        ...userLoginObject.value,
       },
     });
 
-    const auth = useCookie("auth", {
+    const auth = useCookie("auth_token", {
       path: "/",
     });
     auth.value = token;
@@ -27,9 +27,9 @@ const loginAccount = async (requsetBody) => {
       showConfirmButton: false,
       timer: 1500,
     });
-
+    navigateTo("/orders");
   } catch (error) {
-    const { message } = error.response._data;
+    const { message } = error.response?._data;
     $swal.fire({
       position: "center",
       icon: "error",
@@ -47,14 +47,13 @@ const loginAccount = async (requsetBody) => {
       <div class="row justify-content-md-center">
         <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
           <h2 class="h3 mb-4">登入</h2>
-          <form @submit.prevent="loginAccount(userLoginObject)">
+          <form @submit.prevent="loginAccount">
             <div class="form-floating mb-4">
               <input
                 type="email"
                 class="form-control"
                 id="email"
                 placeholder="example@gmail.com"
-                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 required
                 v-model="userLoginObject.email"
               />

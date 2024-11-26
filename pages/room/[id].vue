@@ -31,10 +31,18 @@ const { data: roomObject } = await useFetch(`/rooms/${id}`, {
 <meta name="twitter:image" content="{{房型主圖}}">
 */
 
-/*useSeoMeta({
-
+useSeoMeta({
+  title: `Freyja | ${roomObject.name}`,
+  description: roomObject.description,
+  ogTitle: `Freyja | ${roomObject.name}`,
+  ogDescription: roomObject.description,
+  ogImage: roomObject.imageUrl,
+  ogUrl: `https://freyja.travel.com.tw/room/${roomObject.id}`,
+  twitterCard: "summary_large_image",
+  twitterTitle: `Freyja | ${roomObject.name}`,
+  twitterDescription: roomObject.description,
+  twitterImage: roomObject.imageUrl,
 });
-*/
 
 const isProvide = function (isProvideBoolean = false) {
   return isProvideBoolean ? "提供" : "未提供";

@@ -439,6 +439,8 @@ const handleReservation = (roomInfoData) => {
 // 訂單資訊的格式
 const bookingResult = ref({});
 
+const bookingStore = useBookingStore();
+const { setBooking } = bookingStore;
 // 建立訂單
 const createOrder = (roomInfo, userInfo) => {
   // 1. 將選取的房型以及訂房人資訊整合成訂單資訊 ( bookingResult )
@@ -450,10 +452,16 @@ const createOrder = (roomInfo, userInfo) => {
     }, 
   };
   */
+  bookingResult.value = {
+    ...roomInfo,
+    user: {
+      ...userInfo,
+    },
+  };
   // 2. 將 bookingResult 改成用 pinia 管理狀態
-
-
+  setBooking(bookingResult.value);
   // 3. 使用 router 將頁面導引至 /order
+  navigateTo("/order");
 };
 </script>
 

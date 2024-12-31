@@ -1,12 +1,12 @@
 <script setup>
 // 1. 從 useBookingStore 取出資料 bookingResult
-
-const bookingResult = ref({});
+const bookingStore = useBookingStore();
+const { bookingResult } = storeToRefs(bookingStore);
 </script>
 
 <template>
   <div class="container mt-5">
-    <template v-if="bookingResult.name">
+    <template v-if="bookingResult?.name">
       <!-- 2. 渲染至 HTML 模板 -->
       <div class="row">
         <div class="col-lg-4">
@@ -20,7 +20,7 @@ const bookingResult = ref({});
         <div class="col-lg-8">
           <h3 class="mb-3">房型資訊</h3>
           <p class="fs-1">
-            {{ bookingResult.name }}
+            {{ bookingResult?.name }}
           </p>
           <hr />
           <section class="mb-5">

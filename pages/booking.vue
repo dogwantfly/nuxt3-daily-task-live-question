@@ -1,6 +1,8 @@
 <script setup>
 // 將 bookingInfo 改成使用 Pinia 的資料
-const bookingInfo = ref({});
+
+const bookingStore = useBookingStore();
+const { bookingResult: bookingInfo } = storeToRefs(bookingStore);
 </script>
 
 <template>
@@ -11,37 +13,37 @@ const bookingInfo = ref({});
     <div class="row g-5">
       <div class="col-md-8">
         <div class="room-details">
-          <h1>{{ bookingInfo.name }}</h1>
+          <h1>{{ bookingInfo?.name }}</h1>
           <p class="text-muted">
-            {{ bookingInfo.description }}
+            {{ bookingInfo?.description }}
           </p>
 
           <h3 class="mt-4">房型基本資訊</h3>
           <div class="row text-center py-3">
             <div class="col-4">
-              <div class="info-icon">{{ bookingInfo.areaInfo }}</div>
+              <div class="info-icon">{{ bookingInfo?.areaInfo }}</div>
               <p>房間大小</p>
             </div>
             <div class="col-4">
-              <div class="info-icon">{{ bookingInfo.bedInfo }}</div>
+              <div class="info-icon">{{ bookingInfo?.bedInfo }}</div>
               <p>床型</p>
             </div>
             <div class="col-4">
-              <div class="info-icon">{{ bookingInfo.maxPeople }}</div>
+              <div class="info-icon">{{ bookingInfo?.maxPeople }}</div>
               <p>入住人數</p>
             </div>
           </div>
 
           <h3 class="mt-4">房間格局</h3>
           <ul class="list-unstyled d-flex gap-4">
-            <li v-for="layout in bookingInfo.layoutInfo" :id="layout.title">
+            <li v-for="layout in bookingInfo?.layoutInfo" :id="layout.title">
               ✔ {{ layout.title }}
             </li>
           </ul>
           <h3 class="mt-4">房內設備</h3>
           <ul class="list-unstyled d-flex gap-4">
             <li
-              v-for="facility in bookingInfo.facilityInfo"
+              v-for="facility in bookingInfo?.facilityInfo"
               :id="facility.title"
             >
               ✔ {{ facility.title }}
@@ -49,7 +51,10 @@ const bookingInfo = ref({});
           </ul>
           <h3 class="mt-4">備品提供</h3>
           <ul class="list-unstyled d-flex gap-4">
-            <li v-for="amenity in bookingInfo.amenityInfo" :id="amenity.title">
+            <li
+              v-for="amenity in bookingInfo?.amenityInfo"
+              :id="amenity.title"
+            >
               ✔ {{ amenity.title }}
             </li>
           </ul>
@@ -58,9 +63,9 @@ const bookingInfo = ref({});
       <div class="col-md-4">
         <div class="reservation-form">
           <h2>預訂房型</h2>
-          <p>{{ bookingInfo.name }}</p>
+          <p>{{ bookingInfo?.name }}</p>
           <p class="text-muted">
-            {{ bookingInfo.description }}
+            {{ bookingInfo?.description }}
           </p>
 
           <form>
@@ -99,7 +104,7 @@ const bookingInfo = ref({});
                   class="form-control mx-2"
                   value="2"
                   min="1"
-                  :max="bookingInfo.maxPeople"
+                  :max="bookingInfo?.maxPeople"
                   style="width: 60px"
                 />
                 <button
@@ -112,7 +117,7 @@ const bookingInfo = ref({});
               </div>
             </div>
 
-            <p class="price">NT$ {{ bookingInfo.price }}</p>
+            <p class="price">NT$ {{ bookingInfo?.price }}</p>
 
             <button type="submit" class="btn btn-primary w-100">
               立即預訂

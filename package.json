@@ -10,9 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@vee-validate/i18n": "^4.13.2",
-    "@vee-validate/nuxt": "^4.13.2",
-    "@vee-validate/rules": "^4.13.2",
+    "@vee-validate/i18n": "^4.15.0",
+    "@vee-validate/nuxt": "^4.15.0",
+    "@vee-validate/rules": "^4.15.0",
     "bootstrap": "^5.3.3",
     "nuxt": "3.12.4",
     "vue": "latest",

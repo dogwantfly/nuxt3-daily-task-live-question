@@ -1,4 +1,6 @@
 <script setup>
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+
 const { data: rooms } = await useFetch("/api/v1/rooms", {
   baseURL: "https://nuxr3.zeabur.app",
 });
@@ -14,9 +16,25 @@ const { data: rooms } = await useFetch("/api/v1/rooms", {
       >
         <div class="row">
           <div class="col-lg-6">
-            <pre>
-              {{ room.imageUrlList }} 
-            </pre>
+            <Swiper
+              :loop="true"
+              :slides-per-view="1"
+              :pagination="{
+                el: '.swiper-pagination',
+                type: 'bullets',
+                clickable: true,
+              }"
+              :navigation="{
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              }"
+              :autoplay="{ delay: 5000 }"
+              :modules="[Navigation, Pagination, Autoplay]"
+            >
+              <SwiperSlide v-for="(image, key) in room.imageUrlList" :key="key">
+                <img :src="image" :alt="`圖片${key + 1}`" />
+              </SwiperSlide>
+            </Swiper>
           </div>
           <div class="col-lg-6">
             <div class="card-body">

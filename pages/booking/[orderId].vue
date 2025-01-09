@@ -1,5 +1,13 @@
 <script setup>
 const orderInfo = ref({});
+const route = useRoute();
+const { data, error } = await useFetch(`/api/v1/orders/${route.params.orderId}`, {
+  baseURL: "https://nuxr3.zeabur.app",
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+  }
+});
+orderInfo.value = data.value?.result;
 </script>
 
 <template>

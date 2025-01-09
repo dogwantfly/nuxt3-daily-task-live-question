@@ -1,6 +1,6 @@
 <script setup>
 import { useScreens } from "vue-screen-utils";
-
+const bookingStore = useBookingStore();
 const router = useRouter();
 const route = useRoute();
 const { roomId } = route.params;
@@ -73,7 +73,11 @@ const countDateDiffs = ({ start, end }) => {
 
 const takeReservation = () => {
   const roomId = room.value._id;
-
+  bookingStore.setBookingInfo({
+    roomId: roomId,
+    bookingDate: bookingDate.value,
+    bookingPeople: bookingPeople.value,
+  });
   router.push(`/rooms/${roomId}/booking`);
 };
 </script>

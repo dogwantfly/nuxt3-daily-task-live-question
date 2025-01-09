@@ -16,6 +16,7 @@ const loginAccount = async (userData) => {
     });
 
     accountToken.value = token;
+    localStorage.setItem('auth_token', token);
     alert("登入成功 ! ");
     router.push("/rooms");
   } catch (error) {

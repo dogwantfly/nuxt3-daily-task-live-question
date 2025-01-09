@@ -1,12 +1,57 @@
 <script setup>
-const router = useRouter();
+import { useAuth } from '@/composables/useAuth';
+import dayjs from 'dayjs';
+const route = useRoute();
+const bookingStore = useBookingStore();
+const {data, error} = useFetch(`https://nuxr3.zeabur.app/api/v1/rooms/${route.params.roomId}`);
+console.log(route.params.roomId, data.value);
+const { checkLoginStatus } = useAuth();
 
 const roomInfo = ref({});
-const bookingInfo = ref({});
+if (data.value) {
+  roomInfo.value = data.value.result;
+}
+const { bookingInfo } = storeToRefs(bookingStore);
+const { setBookingInfo } = bookingStore;
+
 
 const discountPrice = 1000;
 
-const createOrder = async (userInfo) => {};
+const createOrder = async (userInfo) => {
+  try {
+    setBookingInfo({...bookingInfo.value, userInfo});
+    const response = await $fetch(`https://nuxr3.zeabur.app/api/v1/orders`, {
+      method: 'POST',
+      body: {
+        roomId: route.params.roomId,
+        ...bookingInfo.value,
+        checkInDate: dayjs(bookingInfo.value.bookingDate.start).format('YYYY/MM/DD'),
+        checkOutDate: dayjs(bookingInfo.value.bookingDate.end).format('YYYY/MM/DD'),
+        peopleNum: bookingInfo.value.bookingPeople,
+        userInfo: {
+          ...bookingInfo.value.userInfo,
+          address: {
+            detail: bookingInfo.value.userInfo.detail,
+            zipcode: 802
+          }
+        }
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`
+      }
+    });
+    console.log(response);
+    navigateTo(`/booking/${response.result._id}`);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    // 可以在這裡加入更多的錯誤處理邏輯，例如顯示錯誤訊息給用戶
+  }
+};
+
+const submitButtonRef = ref(null);
+onMounted(() => {
+  checkLoginStatus();
+});
 </script>
 
 <template>
@@ -21,42 +66,42 @@ const createOrder = async (userInfo) => {};
                 <label for="name" class="form-label fw-bold">姓名</label>
                 <Field
                   id="name"
-                  name="姓名"
+                  name="name"
                   rules="required|min:2"
                   type="text"
                   class="form-control p-3 rounded-3"
-                  :class="{ 'is-invalid': errors['姓名'] }"
+                  :class="{ 'is-invalid': errors['name'] }"
                   placeholder="請輸入姓名"
                 />
-                <ErrorMessage name="姓名" class="invalid-feedback" />
+                <ErrorMessage name="name" class="invalid-feedback" />
               </div>
 
               <div class="mb-4">
                 <label for="phone" class="form-label fw-bold">手機號碼</label>
                 <Field
                   id="phone"
-                  name="手機號碼"
+                  name="phone"
                   rules="required|isPhone"
                   type="tel"
                   class="form-control p-3 rounded-3"
-                  :class="{ 'is-invalid': errors['手機號碼'] }"
+                  :class="{ 'is-invalid': errors['phone'] }"
                   placeholder="請輸入手機號碼"
                 />
-                <ErrorMessage name="手機號碼" class="invalid-feedback" />
+                <ErrorMessage name="phone" class="invalid-feedback" />
               </div>
 
               <div class="mb-4">
                 <label for="email" class="form-label fw-bold">電子信箱</label>
                 <Field
                   id="email"
-                  name="電子信箱"
+                  name="email"
                   rules="required|email"
                   type="email"
                   class="form-control p-3 rounded-3"
-                  :class="{ 'is-invalid': errors['電子信箱'] }"
+                  :class="{ 'is-invalid': errors['email'] }"
                   placeholder="請輸入電子信箱"
                 />
-                <ErrorMessage name="電子信箱" class="invalid-feedback" />
+                <ErrorMessage name="email" class="invalid-feedback" />
               </div>
 
               <div class="mb-4">
@@ -64,7 +109,6 @@ const createOrder = async (userInfo) => {};
                 <div className="d-flex gap-2 mb-4">
                   <Field
                     as="select"
-                    v-slot="value"
                     name="縣市"
                     rules="required"
                     class="form-select w-50 p-3 fw-medium rounded-3"
@@ -88,14 +132,14 @@ const createOrder = async (userInfo) => {};
                 </div>
                 <Field
                   id="road"
-                  name="地址"
+                  name="detail"
                   rules="required"
                   type="text"
                   class="form-control p-3 rounded-3"
-                  :class="{ 'is-invalid': errors['地址'] }"
+                  :class="{ 'is-invalid': errors['detail'] }"
                   placeholder="請輸入詳細地址"
                 />
-                <ErrorMessage name="地址" class="invalid-feedback" />
+                <ErrorMessage name="detail" class="invalid-feedback" />
               </div>
               <button
                 ref="submitButtonRef"
@@ -117,9 +161,9 @@ const createOrder = async (userInfo) => {};
               class="d-flex justify-content-between align-items-center mb-3 fw-medium"
             >
               <span
-                >NT$ {{ roomInfo.price }} X {{ bookingInfo.bookingDays }}晚
+                >NT$ {{ roomInfo.price }} X {{ dayjs(bookingInfo.bookingDate?.end).diff(dayjs(bookingInfo.bookingDate?.start), 'day') }}晚
               </span>
-              <span>NT$ {{ roomInfo.price * bookingInfo.bookingDays }}</span>
+              <span>NT$ {{ roomInfo.price * dayjs(bookingInfo.bookingDate?.end).diff(dayjs(bookingInfo.bookingDate?.start), 'day') }}</span>
             </div>
             <div
               class="d-flex justify-content-between align-items-center fw-medium"
@@ -135,7 +179,7 @@ const createOrder = async (userInfo) => {};
               <span
                 >NT$
                 {{
-                  roomInfo.price * bookingInfo.bookingDays - discountPrice
+                  roomInfo.price * dayjs(bookingInfo.bookingDate?.end).diff(dayjs(bookingInfo.bookingDate?.start), 'day') - discountPrice
                 }}</span
               >
             </div>
@@ -144,6 +188,7 @@ const createOrder = async (userInfo) => {};
           <button
             class="btn btn-lg btn-primary w-100 fw-bold rounded-3"
             type="button"
+            @click="submitButtonRef.click()"
           >
             確認訂房
           </button>
